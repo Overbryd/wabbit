@@ -35,6 +35,14 @@ defmodule Wabbit.Connection do
     Connection.start_link(__MODULE__, connection_options, options)
   end
 
+  def child_spec(connection_options \\ [], options \\ []) do
+    %{
+      id: __MODULE__,
+      start: {__MODULE__, :start_link, [connection_options, options]},
+      type: :worker
+    }
+  end
+
   @doc """
   Closes a connection
   """

@@ -340,7 +340,7 @@ defmodule Wabbit.GenStage do
 
     case state.mod.handle_decode(payload, meta, state.state) do
       {:ok, message, new_state} ->
-        state = %{state | queue: :queue.in({message, meta}, state.queue), state: new_state}
+        state = %{state | queue: :queue.in(message, state.queue), state: new_state}
         dispatch_events(state, state.demand, [])
       {:error, reason, new_state} ->
         :error_logger.format("Decode error with reason: ~s~n", [reason])

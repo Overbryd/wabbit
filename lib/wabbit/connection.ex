@@ -36,6 +36,7 @@ defmodule Wabbit.Connection do
   end
 
   def child_spec(connection_options \\ [], options \\ []) do
+    options = Keyword.merge([name: __MODULE__], options)
     %{
       id: __MODULE__,
       start: {__MODULE__, :start_link, [connection_options, options]},

@@ -24,6 +24,7 @@ defmodule Wabbit.GenStage do
     headers    persistent  priority  correlation_id reply_to     expiration
     message_id timestamp   type      user_id        app_id       cluster_id
   )a
+  def valid_publish_options, do: @publish_options
 
   @consume_options ~w(
     prefetch_size  prefetch_count  global     consumer_tag
@@ -375,7 +376,7 @@ defmodule Wabbit.GenStage do
             {consume_options, _opts} = Keyword.split(opts, @consume_options)
             set_channel_and_start_consuming(state, chan, queue, new_state, consume_options)
           {:ok, new_state} when type == :consumer ->
-            set_channel_and_prepare_publish(state, chan, new_state, [])
+            set_channel_and_prepare_publish(state, chan, new_state)
           {:ok, new_state, opts} when type == :consumer ->
             {publish_options, _opts} = Keyword.split(opts, @publish_options)
             set_channel_and_prepare_publish(state, chan, new_state, publish_options)
@@ -422,6 +423,10 @@ defmodule Wabbit.GenStage do
       other ->
         {:stop, {:bad_return_value, other}, state}
     end
+  end
+
+  defp set_channel_and_prepare_publish(state, chan, new_state) do
+    set_channel_and_prepare_publish(state, chan, new_state, state.publish_options)
   end
 
   defp set_channel_and_prepare_publish(state, chan, new_state, publish_opts) do

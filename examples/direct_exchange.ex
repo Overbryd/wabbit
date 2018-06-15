@@ -94,7 +94,6 @@ defmodule Consumer do
 
   def handle_events(events, _from, state) do
     for {event, meta} <- events do
-      IO.inspect {event, meta}
       :ok = ack(meta.channel, meta.delivery_tag)
     end
     {:noreply, [], state}
